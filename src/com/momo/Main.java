@@ -1,13 +1,11 @@
 package com.momo;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.IntSummaryStatistics;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -107,5 +105,59 @@ public class Main {
                 .distinct()
                 .sorted()
                 .forEach(System.out::println);
+
+        System.out.println("\nDisplaying employees base on department");
+        // Grouping employees by department
+        Map<String, List<Employee>> groupEmployeesByDepartment = Arrays.asList(employees)
+                .stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment));
+
+        groupEmployeesByDepartment.forEach((department, employee)->{
+            System.out.printf("%n%s: %s%n", "Department", department);
+            employee.forEach(System.out::println);
+        });
+
+        System.out.println("Counting employees base on employee department");
+
+        Map<String, Long> countingEmployeesPerDepartment = Arrays.asList(employees)
+                .stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
+        countingEmployeesPerDepartment.forEach((department, employeeCount)->{
+            System.out.printf("%n%s%nEmployee count: %d%n", department, employeeCount);
+        });
+
+        // Display the sum of all employees salary
+        double employeeSalarySum = Arrays.stream(employees)
+                .mapToDouble(Employee::getSalary).sum();
+
+        //Employees Salary sum using reduce
+        double employeeSumTwo = Arrays.stream(employees)
+                .mapToDouble(Employee::getSalary)
+                .reduce(0, (value1, value2)-> value1 + value2);
+
+        // Calculate employees average salary
+        double averageSalary = Arrays.stream(employees)
+                .mapToDouble(Employee::getSalary).average().getAsDouble();
+
+        // Get employee maximum salary
+        double maxSalary = Arrays.stream(employees)
+                .mapToDouble(Employee::getSalary).max().getAsDouble();
+
+        //Summary statistics for employees
+        DoubleSummaryStatistics employeeSummaryStats= Arrays.stream(employees).mapToDouble(Employee::getSalary).summaryStatistics();
+
+
+        // Get Employee min salary
+        double minSalary = Arrays.stream(employees).mapToDouble(Employee::getSalary).min().getAsDouble();
+
+        System.out.printf("%nEmployees salary sum: %.2f%nEmployees Salary Average: %.2f%nEmployees max salary: %.2f%nEmployees min salary: %s%n,",
+                employeeSalarySum, averageSalary, maxSalary, minSalary);
+
+
+
+
+
     }
 }
+
+
